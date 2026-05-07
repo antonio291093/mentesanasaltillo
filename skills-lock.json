@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "skills": {
+    "create-handover-test": {
+      "source": "AgentMantis/test-skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-handover-test/SKILL.md",
+      "computedHash": "2ed9618be9594472f91675bf7d5938888d4402838b90cedd36a2a974829f2021"
+    },
+    "create-pom": {
+      "source": "AgentMantis/test-skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-pom/SKILL.md",
+      "computedHash": "c4e51a00177456a4d28ede05bea133a599e85d7313f6aec0b43be31c3704f89d"
+    },
+    "create-regression-test": {
+      "source": "AgentMantis/test-skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-regression-test/SKILL.md",
+      "computedHash": "1eda293f1e31e374e111b94b77128d62352d613a0b35ae247920a440fa00af8a"
+    },
+    "e2e-test-conventions": {
+      "source": "AgentMantis/test-skills",
+      "sourceType": "github",
+      "skillPath": "skills/e2e-test-conventions/SKILL.md",
+      "computedHash": "548158bfe6f1ddb939f40477065ec13904a1230d61f9525a48fe494e57e96f03"
+    },
+    "e2e-test-suite-init": {
+      "source": "AgentMantis/test-skills",
+      "sourceType": "github",
+      "skillPath": "skills/e2e-test-suite-init/SKILL.md",
+      "computedHash": "15e7725d1e5eeac6f5672d483c9a0ab0a881d6c340554ae31f878d597c34428a"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "516bd2154eb843a8240e43d5b285229129853114ad7075a5e141e1c08e408c84"
+    },
+    "promote-handover-test": {
+      "source": "AgentMantis/test-skills",
+      "sourceType": "github",
+      "skillPath": "skills/promote-handover-test/SKILL.md",
+      "computedHash": "7e4b7724c21ce774ef8a45c87ed9dd315bb34acafb918a6b90c1a414e3d1683a"
+    }
+  }
+}
