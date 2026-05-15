@@ -424,7 +424,7 @@ export default async function HomePage() {
               color: "var(--warm-mid)",
             }}
           >
-            Sin costo de registro · Primera orientación gratuita
+            Sin costo de registro
           </p>
         </div>
       </section>
