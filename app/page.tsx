@@ -140,15 +140,6 @@ export default async function HomePage() {
                 />
               </svg>
             </Link>
-            <span
-              style={{
-                fontFamily: "var(--font-dm-sans)",
-                fontSize: "0.875rem",
-                color: "var(--warm-mid)",
-              }}
-            >
-              Primera consulta orientativa gratuita
-            </span>
           </div>
           {specialistCount !== null && specialistCount > 0 && (
             <p
