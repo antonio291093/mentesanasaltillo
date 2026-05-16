@@ -23,9 +23,6 @@ export const metadata: Metadata = {
   title: "Mente Sana Saltillo — Salud Mental en Coahuila",
   description:
     "Conecta con especialistas en salud mental en Saltillo, Coahuila. Tu bienestar emocional es nuestra prioridad.",
-  icons: {
-    icon: "/favicon.svg",
-  },
 };
 
 export default function RootLayout({
