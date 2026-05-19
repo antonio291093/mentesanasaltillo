@@ -14,7 +14,32 @@ const app = express();
 
 // ── Seguridad y parsers ───────────────────────────────────────────────────────
 app.use(helmet());
-app.use(cors({ origin: env.FRONTEND_URL, credentials: true }));
+
+const allowedOrigins = (() => {
+  const origins = new Set(['http://localhost:3000']);
+  if (env.FRONTEND_URL) {
+    origins.add(env.FRONTEND_URL);
+    // Agrega automáticamente la variante con/sin www
+    if (env.FRONTEND_URL.startsWith('https://www.')) {
+      origins.add(env.FRONTEND_URL.replace('https://www.', 'https://'));
+    } else if (env.FRONTEND_URL.startsWith('https://')) {
+      origins.add(env.FRONTEND_URL.replace('https://', 'https://www.'));
+    }
+  }
+  return origins;
+})();
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Permitir requests sin origen (p.ej. Postman, curl)
+    if (!origin || allowedOrigins.has(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origen no permitido por CORS: ${origin}`));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
