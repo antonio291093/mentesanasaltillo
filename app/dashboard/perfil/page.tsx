@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import * as profApi from '@/lib/api/professionals.api'
 import * as specApi from '@/lib/api/specialties.api'
+import * as authApi from '@/lib/api/auth.api'
 import type { ProfessionalProfile, Specialty, Modality } from '@/lib/types/api.types'
 
 // ─── Tipos del formulario ─────────────────────────────────────────────────────
@@ -10,6 +11,7 @@ import type { ProfessionalProfile, Specialty, Modality } from '@/lib/types/api.t
 interface ProfileForm {
   descripcion:         string
   foto_url:            string
+  telefono:            string
   precio_sesion_min:   string
   precio_sesion_max:   string
   modalidad:           Modality
@@ -21,15 +23,16 @@ interface ProfileForm {
 }
 
 const EMPTY_FORM: ProfileForm = {
-  descripcion: '', foto_url: '', precio_sesion_min: '', precio_sesion_max: '',
+  descripcion: '', foto_url: '', telefono: '', precio_sesion_min: '', precio_sesion_max: '',
   modalidad: 'presencial', direccion: '', colonia: '', ciudad: 'Saltillo',
   cedula_profesional: '', cedula_especialidad: '',
 }
 
-function profileToForm(p: ProfessionalProfile): ProfileForm {
+function profileToForm(p: ProfessionalProfile, telefono: string): ProfileForm {
   return {
     descripcion:         p.descripcion ?? '',
     foto_url:            p.perfil_foto ?? '',
+    telefono,
     precio_sesion_min:   p.precio_sesion_min?.toString() ?? '',
     precio_sesion_max:   p.precio_sesion_max?.toString() ?? '',
     modalidad:           p.modalidad,
@@ -115,11 +118,15 @@ export default function PerfilPage() {
         throw err
       }),
       specApi.getAll(),
-    ]).then(([prof, specs]) => {
+      authApi.getMe(),
+    ]).then(([prof, specs, me]) => {
+      const telefono = me.telefono ?? ''
       if (prof) {
         setProfile(prof)
-        setForm(profileToForm(prof))
+        setForm(profileToForm(prof, telefono))
         setSelectedIds((prof.specialties ?? []).map(s => s.id))
+      } else {
+        setForm(prev => ({ ...prev, telefono }))
       }
       setCatalog(specs)
     }).catch(err => {
@@ -160,11 +167,13 @@ export default function PerfilPage() {
     }
 
     try {
-      const updated = noProfile
-        ? await profApi.createProfile(payload)
-        : await profApi.updateProfile(payload)
-
-      await profApi.updateSpecialties(selectedIds)
+      const [updated] = await Promise.all([
+        noProfile
+          ? profApi.createProfile(payload)
+          : profApi.updateProfile(payload),
+        authApi.updateMe({ telefono: form.telefono || null }),
+        profApi.updateSpecialties(selectedIds),
+      ])
 
       setProfile(updated)
       setNoProfile(false)
@@ -245,6 +254,23 @@ export default function PerfilPage() {
                 onFocus={inputFocusOn}
                 onBlur={inputFocusOff}
               />
+            </div>
+
+            <div>
+              <Label>Teléfono de contacto</Label>
+              <input
+                type="tel"
+                value={form.telefono}
+                onChange={set('telefono')}
+                placeholder="Ej. 844 123 4567"
+                className="mt-1.5 w-full rounded-xl px-4 py-3 outline-none transition-all"
+                style={INPUT_STYLE}
+                onFocus={inputFocusOn}
+                onBlur={inputFocusOff}
+              />
+              <p className="mt-1" style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.75rem', color: 'var(--warm-mid)' }}>
+                Opcional · Visible para usuarios registrados en tu perfil público
+              </p>
             </div>
 
           </div>

@@ -102,6 +102,8 @@ export interface ProfessionalProfile {
   nombre:               string;
   apellido:             string;
   perfil_foto:          string | null;
+  telefono:             string | null;
+  email:                string;
   specialties:          Array<{ id: number; nombre: string }>;
   schedules:            Schedule[];
   reviews:              Review[];

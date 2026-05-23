@@ -35,3 +35,11 @@ export async function getMe(): Promise<User> {
   const res = await apiClient<ApiResponse<User>>('/users/me');
   return res.data!;
 }
+
+export async function updateMe(dto: { telefono?: string | null }): Promise<User> {
+  const res = await apiClient<ApiResponse<User>>('/users/me', {
+    method: 'PATCH',
+    body:   JSON.stringify(dto),
+  });
+  return res.data!;
+}

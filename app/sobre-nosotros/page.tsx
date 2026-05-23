@@ -385,8 +385,8 @@ export default function SobreNosotrosPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              type="button"
+            <Link
+              href="/registro-profesional"
               className="inline-flex items-center gap-3 rounded-full transition-all hover:opacity-90 hover:shadow-xl"
               style={{
                 backgroundColor: 'var(--terracotta)',
@@ -395,14 +395,13 @@ export default function SobreNosotrosPage() {
                 fontSize: '1.05rem',
                 fontWeight: 500,
                 padding: '1rem 2.2rem',
-                cursor: 'pointer',
               }}
             >
               Registra tu perfil
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
                 <path d="M3.5 9H14.5M14.5 9L10 4.5M14.5 9L10 13.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </button>
+            </Link>
             <Link
               href="/especialistas"
               style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.9rem', color: '#7A6A5E' }}

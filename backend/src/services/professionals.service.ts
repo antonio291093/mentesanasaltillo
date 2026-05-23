@@ -73,7 +73,8 @@ export async function getProfessionals(filter: ProfessionalsFilter = {}) {
 export async function getProfessionalById(id: number) {
   const { rows } = await pool.query(
     `SELECT pp.*,
-            up.nombre, up.apellido, up.foto_url AS perfil_foto,
+            up.nombre, up.apellido, up.foto_url AS perfil_foto, up.telefono,
+            u.email,
             COALESCE(json_agg(DISTINCT jsonb_build_object('id', s.id, 'nombre', s.nombre))
                      FILTER (WHERE s.id IS NOT NULL), '[]') AS specialties,
             COALESCE(json_agg(DISTINCT jsonb_build_object(
@@ -93,13 +94,14 @@ export async function getProfessionalById(id: number) {
             COUNT(DISTINCT r.id)::int AS review_count
      FROM professional_profiles pp
      JOIN user_profiles up ON up.user_id = pp.user_id
+     JOIN users u ON u.id = pp.user_id
      LEFT JOIN professional_specialties ps ON ps.professional_id = pp.id
      LEFT JOIN specialties s ON s.id = ps.specialty_id
      LEFT JOIN schedules sch ON sch.professional_id = pp.id
      LEFT JOIN reviews r ON r.professional_id = pp.id AND r.estado = 'aprobado'
      LEFT JOIN user_profiles reviewer ON reviewer.user_id = r.user_id
      WHERE pp.id = $1 AND pp.estado_verificacion = 'aprobado' AND pp.is_active = true
-     GROUP BY pp.id, up.nombre, up.apellido, up.foto_url`,
+     GROUP BY pp.id, up.nombre, up.apellido, up.foto_url, up.telefono, u.email`,
     [id],
   );
 

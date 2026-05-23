@@ -311,16 +311,37 @@ export default function EspecialistaPage() {
               {/* CTA de contacto */}
               {isAuthenticated ? (
                 <div
-                  className="inline-flex items-center gap-3 rounded-2xl px-6 py-4"
+                  className="rounded-2xl px-6 py-5 space-y-3"
                   style={{ backgroundColor: 'var(--sage-light)', border: '1px solid var(--border)' }}
                 >
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M3 5H21V17C21 17.55 20.55 18 20 18H4C3.45 18 3 17.55 3 17V5Z" stroke="var(--sage)" strokeWidth="1.5" strokeLinejoin="round" />
-                    <path d="M3 5L12 13L21 5" stroke="var(--sage)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.9rem', color: 'var(--foreground)' }}>
-                    Contacta directamente al especialista para agendar tu cita.
+                  <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.68rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--warm-mid)' }}>
+                    Información de contacto
                   </p>
+                  <a
+                    href={`mailto:${s.email}`}
+                    className="flex items-center gap-2.5 hover:opacity-75 transition-opacity"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M3 5H21V17C21 17.55 20.55 18 20 18H4C3.45 18 3 17.55 3 17V5Z" stroke="var(--sage)" strokeWidth="1.5" strokeLinejoin="round" />
+                      <path d="M3 5L12 13L21 5" stroke="var(--sage)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.95rem', fontWeight: 500 }}>
+                      {s.email}
+                    </span>
+                  </a>
+                  {s.telefono && (
+                    <a
+                      href={`tel:${s.telefono}`}
+                      className="flex items-center gap-2.5 hover:opacity-75 transition-opacity"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                        <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.4 11.4 0 003.57.57 1 1 0 011 1V20a1 1 0 01-1 1C9.61 21 3 14.39 3 6a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" stroke="var(--sage)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.95rem', fontWeight: 500 }}>
+                        {s.telefono}
+                      </span>
+                    </a>
+                  )}
                 </div>
               ) : (
                 <>

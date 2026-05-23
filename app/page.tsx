@@ -1,6 +1,8 @@
 import Link from "next/link";
 import * as profApi from "@/lib/api/professionals.api";
 
+export const revalidate = 3600; // revalida cada hora
+
 async function getSpecialistCount(): Promise<number | null> {
   try {
     const res = await profApi.getAll({ limit: 1 });
