@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import { useProfessional } from '@/lib/hooks/useProfessionals'
 import { useAuth } from '@/lib/hooks/useAuth'
 import type { DayOfWeek, Schedule } from '@/lib/types/api.types'
+import MapaUbicacion from '@/components/MapaUbicacion'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -449,6 +450,39 @@ export default function EspecialistaPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Mapa de ubicación (solo si hay coordenadas) ───────────────────── */}
+      {s.latitud != null && s.longitud != null && (
+        <section className="px-6 py-16 lg:px-16 lg:py-20" style={{ backgroundColor: 'var(--card-bg)' }}>
+          <div className="max-w-6xl mx-auto">
+            <p className="mb-3" style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.72rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--warm-mid)' }}>
+              Cómo llegar
+            </p>
+            <h2 className="mb-8" style={{ fontFamily: 'var(--font-cormorant)', fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', fontWeight: 500, fontStyle: 'italic', lineHeight: 1.2 }}>
+              Ubicación del consultorio
+            </h2>
+
+            <MapaUbicacion
+              lat={s.latitud}
+              lng={s.longitud}
+              readOnly
+              onChange={() => {}}
+            />
+
+            {(s.direccion || s.colonia) && (
+              <div className="mt-5 flex items-start gap-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden style={{ color: 'var(--terracotta)', flexShrink: 0, marginTop: '1px' }}>
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                  <circle cx="12" cy="9" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
+                <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.95rem', color: 'var(--warm-mid)', lineHeight: 1.6 }}>
+                  {[s.direccion, s.colonia, s.ciudad].filter(Boolean).join(', ')}
+                </p>
+              </div>
+            )}
           </div>
         </section>
       )}
