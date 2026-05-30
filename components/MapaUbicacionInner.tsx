@@ -51,14 +51,18 @@ function ClickLayer({ onPlace }: { onPlace: (lat: number, lng: number) => void }
 // ─── Componente principal ─────────────────────────────────────────────────────
 
 export function MapaUbicacionInner({ lat, lng, onChange, readOnly = false }: Props) {
-  const hasCoords = lat != null && lng != null
+  const safeLat = lat != null ? Number(lat) : null
+  const safeLng = lng != null ? Number(lng) : null
+  const hasCoords = safeLat != null && safeLng != null
   const [pos, setPos] = useState<[number, number] | null>(
-    hasCoords ? [lat, lng] : null,
+    hasCoords ? [safeLat, safeLng] : null,
   )
 
   // Sincroniza si el padre cambia las coordenadas (ej: carga inicial desde API)
   useEffect(() => {
-    setPos(lat != null && lng != null ? [lat, lng] : null)
+    const la = lat != null ? Number(lat) : null
+    const lo = lng != null ? Number(lng) : null
+    setPos(la != null && lo != null ? [la, lo] : null)
   }, [lat, lng])
 
   const place = useCallback((newLat: number, newLng: number) => {
@@ -175,7 +179,7 @@ export function MapaUbicacionInner({ lat, lng, onChange, readOnly = false }: Pro
                 letterSpacing: '0.03em',
                 opacity: 0.85,
               }}>
-                {pos[0].toFixed(6)},&nbsp;{pos[1].toFixed(6)}
+                {Number(pos[0]).toFixed(6)},&nbsp;{Number(pos[1]).toFixed(6)}
               </span>
             </>
           ) : (
