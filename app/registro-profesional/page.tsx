@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/hooks/useAuth'
 import * as profApi from '@/lib/api/professionals.api'
 import * as specApi from '@/lib/api/specialties.api'
 import type { Specialty, Modality } from '@/lib/types/api.types'
+import MapaUbicacion from '@/components/MapaUbicacion'
 
 // ─── Style helpers ─────────────────────────────────────────────────────────────
 
@@ -128,6 +129,7 @@ interface S2 {
   descripcion: string; cedula_profesional: string; cedula_especialidad: string
   precio_sesion_min: string; precio_sesion_max: string; modalidad: Modality
   direccion: string; colonia: string; ciudad: string
+  latitud: number | null; longitud: number | null
   selectedIds: number[]; addingId: number | ''
 }
 
@@ -153,6 +155,7 @@ export default function RegistroProfesionalPage() {
     descripcion: '', cedula_profesional: '', cedula_especialidad: '',
     precio_sesion_min: '', precio_sesion_max: '', modalidad: 'presencial',
     direccion: '', colonia: '', ciudad: 'Saltillo',
+    latitud: null, longitud: null,
     selectedIds: [], addingId: '',
   })
 
@@ -162,7 +165,7 @@ export default function RegistroProfesionalPage() {
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
       setS1(p => ({ ...p, [f]: e.target.value }))
 
-  const upd2 = (f: keyof Omit<S2, 'selectedIds' | 'addingId'>) =>
+  const upd2 = (f: keyof Omit<S2, 'selectedIds' | 'addingId' | 'latitud' | 'longitud'>) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
       setS2(p => ({ ...p, [f]: e.target.value }))
 
@@ -207,6 +210,8 @@ export default function RegistroProfesionalPage() {
         direccion:           s2.direccion || null,
         colonia:             s2.colonia || null,
         ciudad:              s2.ciudad,
+        latitud:             s2.latitud,
+        longitud:            s2.longitud,
       })
       if (s2.selectedIds.length > 0) {
         await profApi.updateSpecialties(s2.selectedIds)
@@ -564,6 +569,21 @@ export default function RegistroProfesionalPage() {
                       style={INPUT_STYLE} onFocus={inputFocusOn} onBlur={inputFocusOff}
                     />
                   </div>
+                </div>
+
+                {/* Mapa de ubicación */}
+                <div>
+                  <FieldLabel>Pin en el mapa</FieldLabel>
+                  <div className="mt-2">
+                    <MapaUbicacion
+                      lat={s2.latitud}
+                      lng={s2.longitud}
+                      onChange={(lat, lng) => setS2(p => ({ ...p, latitud: lat, longitud: lng }))}
+                    />
+                  </div>
+                  <p className="mt-2" style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.75rem', color: 'var(--warm-mid)' }}>
+                    Opcional · Arrastra el pin o haz clic para marcar la ubicación exacta de tu consultorio.
+                  </p>
                 </div>
               </div>
             </div>

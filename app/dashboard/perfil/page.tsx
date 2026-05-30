@@ -5,6 +5,7 @@ import * as profApi from '@/lib/api/professionals.api'
 import * as specApi from '@/lib/api/specialties.api'
 import * as authApi from '@/lib/api/auth.api'
 import type { ProfessionalProfile, Specialty, Modality } from '@/lib/types/api.types'
+import MapaUbicacion from '@/components/MapaUbicacion'
 
 // ─── Tipos del formulario ─────────────────────────────────────────────────────
 
@@ -20,12 +21,15 @@ interface ProfileForm {
   ciudad:              string
   cedula_profesional:  string
   cedula_especialidad: string
+  latitud:             number | null
+  longitud:            number | null
 }
 
 const EMPTY_FORM: ProfileForm = {
   descripcion: '', foto_url: '', telefono: '', precio_sesion_min: '', precio_sesion_max: '',
   modalidad: 'presencial', direccion: '', colonia: '', ciudad: 'Saltillo',
   cedula_profesional: '', cedula_especialidad: '',
+  latitud: null, longitud: null,
 }
 
 function profileToForm(p: ProfessionalProfile, telefono: string): ProfileForm {
@@ -41,6 +45,8 @@ function profileToForm(p: ProfessionalProfile, telefono: string): ProfileForm {
     ciudad:              p.ciudad,
     cedula_profesional:  p.cedula_profesional,
     cedula_especialidad: p.cedula_especialidad ?? '',
+    latitud:             p.latitud ?? null,
+    longitud:            p.longitud ?? null,
   }
 }
 
@@ -164,6 +170,8 @@ export default function PerfilPage() {
       ciudad:             form.ciudad,
       cedula_profesional: form.cedula_profesional,
       cedula_especialidad: form.cedula_especialidad || null,
+      latitud:            form.latitud,
+      longitud:           form.longitud,
     }
 
     try {
@@ -404,6 +412,21 @@ export default function PerfilPage() {
                   onBlur={inputFocusOff}
                 />
               </div>
+            </div>
+
+            {/* Mapa de ubicación */}
+            <div>
+              <Label>Pin en el mapa</Label>
+              <div className="mt-2">
+                <MapaUbicacion
+                  lat={form.latitud}
+                  lng={form.longitud}
+                  onChange={(lat, lng) => setForm(prev => ({ ...prev, latitud: lat, longitud: lng }))}
+                />
+              </div>
+              <p className="mt-2" style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.75rem', color: 'var(--warm-mid)' }}>
+                Opcional · Arrastra el pin o haz clic para marcar la ubicación exacta de tu consultorio.
+              </p>
             </div>
           </div>
         </section>

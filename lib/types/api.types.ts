@@ -72,6 +72,8 @@ export interface ProfessionalSummary {
   precio_sesion_max: number | null;
   colonia:           string | null;
   ciudad:            string;
+  latitud:           number | null;
+  longitud:          number | null;
   created_at:        string;
   nombre:            string;
   apellido:          string;
@@ -95,6 +97,8 @@ export interface ProfessionalProfile {
   direccion:            string | null;
   colonia:              string | null;
   ciudad:               string;
+  latitud:              number | null;
+  longitud:             number | null;
   estado_verificacion:  VerificationStatus;
   motivo_rechazo:       string | null;
   is_active:            boolean;
