@@ -29,6 +29,7 @@ Personas de Saltillo que buscan atención psicológica o psiquiátrica.
 - `app/dashboard/perfil/page.tsx` — Editar perfil profesional: bio, cédulas, precios, ubicación, especialidades
 - `app/dashboard/horarios/page.tsx` — Gestionar horarios de atención por día de la semana
 - `app/dashboard/resenas/page.tsx` — Aprobar/rechazar reseñas de pacientes por pestañas
+- `app/dashboard/layout.tsx` — Layout del dashboard de psicólogo: guard de rol psicologo
 - `app/admin/layout.tsx` — Layout del panel admin: sidebar desktop + barra inferior móvil, guard de rol admin
 - `app/admin/page.tsx` — Resumen admin: stats generales + tabla de profesionales pendientes con aprobar/rechazar inline
 - `app/admin/profesionales/page.tsx` — Gestión de profesionales por estado (pendiente/aprobado/rechazado) con acciones
@@ -115,13 +116,13 @@ Admin
 - ✅ Página de registro profesional: `/registro-profesional`
 - ✅ Dashboard de administrador: `/admin` (resumen con stats, gestión de profesionales, gestión de reseñas)
 
-#### Pendiente — Deploy a producción
-- Dockerizar frontend, backend y PostgreSQL
-- Configurar Nginx como reverse proxy
-- Configurar Certbot para SSL/HTTPS
-- Configurar dominio en Namecheap → DigitalOcean
-- Cambiar `EMAIL_FROM` a `noreply@mentesanasaltillo.com` en producción
-- Generar `JWT_SECRET` seguro para producción
+#### Deploy a producción (completado)
+- ✅ Frontend, backend, PostgreSQL y Nginx dockerizados con Docker Compose
+- ✅ Nginx configurado como reverse proxy
+- ✅ Dominio adquirido en Namecheap apuntando a VPS en DigitalOcean
+- ✅ Certbot configurado para SSL/HTTPS
+- ✅ `EMAIL_FROM` configurado a `noreply@mentesanasaltillo.com`
+- ✅ `JWT_SECRET` seguro generado para producción
 
 ## Comandos
 
@@ -132,7 +133,7 @@ npm run start    # Iniciar servidor de producción
 npm run lint     # Ejecutar ESLint
 ```
 
-**E2E**: Playwright configurado en `e2e/` con 23 tests que cubren
+**E2E**: Playwright configurado en `e2e/` con 21 tests que cubren
 navegación, autenticación, especialistas y dashboards.
 Correr con: `$env:TEST_ENV="local"; npx playwright test --config=e2e/playwright.config.ts`
 
