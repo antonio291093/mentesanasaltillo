@@ -45,6 +45,8 @@ export interface ProfessionalProfile {
   direccion:            string | null;
   colonia:              string | null;
   ciudad:               string;
+  latitud:              number | null;
+  longitud:             number | null;
   estado_verificacion:  VerificationStatus;
   motivo_rechazo:       string | null;
   aprobado_por:         number | null;
@@ -160,6 +162,8 @@ export interface CreateProfessionalDto {
   direccion?:          string;
   colonia?:            string;
   ciudad?:             string;
+  latitud?:            number;
+  longitud?:           number;
 }
 
 export type UpdateProfessionalDto = Partial<CreateProfessionalDto>;

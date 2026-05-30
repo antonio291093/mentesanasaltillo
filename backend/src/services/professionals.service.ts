@@ -47,7 +47,7 @@ export async function getProfessionals(filter: ProfessionalsFilter = {}) {
   params.push(limit, offset);
   const { rows } = await pool.query(
     `SELECT pp.id, pp.modalidad, pp.precio_sesion_min, pp.precio_sesion_max,
-            pp.colonia, pp.ciudad, pp.created_at,
+            pp.colonia, pp.ciudad, pp.latitud, pp.longitud, pp.created_at,
             up.nombre, up.apellido, up.foto_url,
             ROUND(AVG(r.calificacion)::numeric, 1) AS avg_rating,
             COUNT(DISTINCT r.id)::int AS review_count,
@@ -130,8 +130,9 @@ export async function createProfessionalProfile(
   const { rows } = await pool.query(
     `INSERT INTO professional_profiles
        (user_id, descripcion, cedula_profesional, cedula_especialidad, titulo_url,
-        precio_sesion_min, precio_sesion_max, modalidad, direccion, colonia, ciudad)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+        precio_sesion_min, precio_sesion_max, modalidad, direccion, colonia, ciudad,
+        latitud, longitud)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
      RETURNING *`,
     [
       userId,
@@ -145,6 +146,8 @@ export async function createProfessionalProfile(
       dto.direccion ?? null,
       dto.colonia ?? null,
       dto.ciudad ?? 'Saltillo',
+      dto.latitud ?? null,
+      dto.longitud ?? null,
     ],
   );
   return rows[0];

@@ -1,8 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
+import { validationResult } from 'express-validator';
 import { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import * as profService from '../services/professionals.service';
 import { CreateProfessionalDto, UpdateProfessionalDto, SetSchedulesDto, ProfessionalsFilter } from '../types';
 import { AppError } from '../middlewares/error.middleware';
+
+function checkValidation(req: Request, res: Response): boolean {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json({
+      success: false,
+      errors: errors.array().map((e) => ({
+        campo:   e.type === 'field' ? e.path : 'general',
+        mensaje: e.msg,
+      })),
+    });
+    return false;
+  }
+  return true;
+}
 
 export async function listProfessionals(req: Request, res: Response, next: NextFunction) {
   try {
@@ -32,6 +48,7 @@ export async function getProfessional(req: Request, res: Response, next: NextFun
 
 export async function createProfile(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
+    if (!checkValidation(req, res)) return;
     const dto: CreateProfessionalDto = req.body;
     const profile = await profService.createProfessionalProfile(req.user!.id, dto);
     res.status(201).json({ success: true, data: profile });
@@ -42,6 +59,7 @@ export async function createProfile(req: AuthenticatedRequest, res: Response, ne
 
 export async function updateProfile(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
+    if (!checkValidation(req, res)) return;
     const dto: UpdateProfessionalDto = req.body;
     const profile = await profService.updateProfessionalProfile(req.user!.id, dto);
     res.json({ success: true, data: profile });

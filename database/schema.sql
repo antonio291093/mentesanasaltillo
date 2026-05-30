@@ -71,6 +71,8 @@ CREATE TABLE professional_profiles (
     direccion            TEXT,
     colonia              VARCHAR(150),
     ciudad               VARCHAR(100)     NOT NULL DEFAULT 'Saltillo',
+    latitud              DECIMAL(9, 6),
+    longitud             DECIMAL(9, 6),
     estado_verificacion  verificacion_estado NOT NULL DEFAULT 'pendiente',
     motivo_rechazo       TEXT,
     aprobado_por         INTEGER,
