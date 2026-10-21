@@ -153,6 +153,7 @@ export interface UpdateUserProfileDto {
 
 export interface CreateProfessionalDto {
   descripcion?:        string;
+  foto_url?:           string;
   cedula_profesional:  string;
   cedula_especialidad?: string;
   titulo_url?:         string;

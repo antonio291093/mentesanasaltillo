@@ -161,7 +161,7 @@ export default function PerfilPage() {
 
     const payload = {
       descripcion:        form.descripcion || null,
-      perfil_foto:        form.foto_url || null,
+      foto_url:           form.foto_url || null,
       precio_sesion_min:  form.precio_sesion_min ? Number(form.precio_sesion_min) : null,
       precio_sesion_max:  form.precio_sesion_max ? Number(form.precio_sesion_max) : null,
       modalidad:          form.modalidad,

@@ -48,7 +48,7 @@ export async function getProfessionals(filter: ProfessionalsFilter = {}) {
   const { rows } = await pool.query(
     `SELECT pp.id, pp.modalidad, pp.precio_sesion_min, pp.precio_sesion_max,
             pp.colonia, pp.ciudad, pp.latitud, pp.longitud, pp.created_at,
-            up.nombre, up.apellido, up.foto_url,
+            pp.foto_url, up.nombre, up.apellido,
             ROUND(AVG(r.calificacion)::numeric, 1) AS avg_rating,
             COUNT(DISTINCT r.id)::int AS review_count,
             COALESCE(json_agg(DISTINCT s.nombre) FILTER (WHERE s.id IS NOT NULL), '[]') AS specialties
@@ -58,7 +58,7 @@ export async function getProfessionals(filter: ProfessionalsFilter = {}) {
      LEFT JOIN specialties s ON s.id = ps.specialty_id
      LEFT JOIN reviews r ON r.professional_id = pp.id AND r.estado = 'aprobado'
      WHERE ${where}
-     GROUP BY pp.id, up.nombre, up.apellido, up.foto_url
+     GROUP BY pp.id, up.nombre, up.apellido
      ORDER BY pp.aprobado_at DESC
      LIMIT $${params.length - 1} OFFSET $${params.length}`,
     params,
@@ -73,7 +73,7 @@ export async function getProfessionals(filter: ProfessionalsFilter = {}) {
 export async function getProfessionalById(id: number) {
   const { rows } = await pool.query(
     `SELECT pp.*,
-            up.nombre, up.apellido, up.foto_url AS perfil_foto, up.telefono,
+            up.nombre, up.apellido, pp.foto_url AS perfil_foto, up.telefono,
             u.email,
             COALESCE(json_agg(DISTINCT jsonb_build_object('id', s.id, 'nombre', s.nombre))
                      FILTER (WHERE s.id IS NOT NULL), '[]') AS specialties,
@@ -101,7 +101,7 @@ export async function getProfessionalById(id: number) {
      LEFT JOIN reviews r ON r.professional_id = pp.id AND r.estado = 'aprobado'
      LEFT JOIN user_profiles reviewer ON reviewer.user_id = r.user_id
      WHERE pp.id = $1 AND pp.estado_verificacion = 'aprobado' AND pp.is_active = true
-     GROUP BY pp.id, up.nombre, up.apellido, up.foto_url, up.telefono, u.email`,
+     GROUP BY pp.id, up.nombre, up.apellido, up.telefono, u.email`,
     [id],
   );
 
@@ -129,14 +129,15 @@ export async function createProfessionalProfile(
 
   const { rows } = await pool.query(
     `INSERT INTO professional_profiles
-       (user_id, descripcion, cedula_profesional, cedula_especialidad, titulo_url,
+       (user_id, descripcion, foto_url, cedula_profesional, cedula_especialidad, titulo_url,
         precio_sesion_min, precio_sesion_max, modalidad, direccion, colonia, ciudad,
         latitud, longitud)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
      RETURNING *`,
     [
       userId,
       dto.descripcion ?? null,
+      dto.foto_url ?? null,
       dto.cedula_profesional,
       dto.cedula_especialidad ?? null,
       dto.titulo_url ?? null,
@@ -153,11 +154,18 @@ export async function createProfessionalProfile(
   return rows[0];
 }
 
+// Columnas que el psicólogo puede editar; cualquier otra clave del body se ignora
+const UPDATABLE_PROFESSIONAL_FIELDS: (keyof UpdateProfessionalDto)[] = [
+  'descripcion', 'foto_url', 'cedula_profesional', 'cedula_especialidad', 'titulo_url',
+  'precio_sesion_min', 'precio_sesion_max', 'modalidad', 'direccion', 'colonia', 'ciudad',
+  'latitud', 'longitud',
+];
+
 export async function updateProfessionalProfile(
   userId: number,
   dto: UpdateProfessionalDto,
 ): Promise<ProfessionalProfile> {
-  const fields = Object.keys(dto) as (keyof UpdateProfessionalDto)[];
+  const fields = UPDATABLE_PROFESSIONAL_FIELDS.filter((f) => dto[f] !== undefined);
   if (fields.length === 0) throw new AppError('No hay campos para actualizar', 400);
 
   const setClauses = fields.map((f, i) => `${f} = $${i + 2}`).join(', ');
@@ -221,7 +229,7 @@ export async function setSchedules(professionalId: number, dto: SetSchedulesDto)
 export async function getMyProfile(userId: number) {
   const { rows } = await pool.query(
     `SELECT pp.*,
-            up.nombre, up.apellido, up.foto_url AS perfil_foto,
+            up.nombre, up.apellido, pp.foto_url AS perfil_foto,
             COALESCE(json_agg(DISTINCT jsonb_build_object('id', s.id, 'nombre', s.nombre))
                      FILTER (WHERE s.id IS NOT NULL), '[]') AS specialties,
             COALESCE(json_agg(DISTINCT jsonb_build_object(
@@ -248,7 +256,7 @@ export async function getMyProfile(userId: number) {
      LEFT JOIN reviews r ON r.professional_id = pp.id
      LEFT JOIN user_profiles reviewer ON reviewer.user_id = r.user_id
      WHERE pp.user_id = $1
-     GROUP BY pp.id, up.nombre, up.apellido, up.foto_url`,
+     GROUP BY pp.id, up.nombre, up.apellido`,
     [userId],
   );
   if (!rows[0]) throw new AppError('Perfil profesional no encontrado', 404);
