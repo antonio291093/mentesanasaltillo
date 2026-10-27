@@ -20,9 +20,25 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mentesanasaltillo.com"),
   title: "Mente Sana Saltillo — Salud Mental en Coahuila",
   description:
     "Conecta con especialistas en salud mental en Saltillo, Coahuila. Tu bienestar emocional es nuestra prioridad.",
+  openGraph: {
+    title: "Mente Sana Saltillo",
+    description:
+      "Directorio de especialistas en salud mental en Saltillo, Coahuila. Encuentra al profesional que se adapte a ti.",
+    url: "https://mentesanasaltillo.com",
+    siteName: "Mente Sana Saltillo",
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mente Sana Saltillo",
+    description:
+      "Directorio de especialistas en salud mental en Saltillo, Coahuila.",
+  },
 };
 
 export default function RootLayout({
