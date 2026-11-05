@@ -9,6 +9,8 @@ import professionalsRoutes from './routes/professionals.routes';
 import specialtiesRoutes from './routes/specialties.routes';
 import reviewsRoutes from './routes/reviews.routes';
 import adminRoutes from './routes/admin.routes';
+import postsRoutes from './routes/posts.routes';
+import uploadsRoutes from './routes/uploads.routes';
 
 const app = express();
 
@@ -40,7 +42,7 @@ app.use(cors({
   },
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // ── Rutas ─────────────────────────────────────────────────────────────────────
@@ -52,6 +54,16 @@ app.use(`${API}/professionals`, professionalsRoutes);
 app.use(`${API}/specialties`,   specialtiesRoutes);
 app.use(`${API}/reviews`,       reviewsRoutes);
 app.use(`${API}/admin`,         adminRoutes);
+app.use(`${API}/posts`,         postsRoutes);
+app.use(`${API}/uploads`,       uploadsRoutes);
+
+// ── Imágenes del blog en desarrollo (en producción las sirve Nginx) ──────────
+if (env.NODE_ENV !== 'production') {
+  app.use('/uploads', (_req, res, next) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    next();
+  }, express.static(env.UPLOADS_DIR));
+}
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get(`${API}/health`, (_req, res) => {

@@ -148,6 +148,28 @@ export interface PaginatedApiResponse<T> {
   pagination: Pagination;
 }
 
+// ─── Blog ─────────────────────────────────────────────────────────────────────
+
+export type PostStatus = 'borrador' | 'publicado';
+
+export interface PostSummary {
+  id:           number;
+  slug:         string;
+  titulo:       string;
+  resumen:      string | null;
+  imagen_url:   string | null;
+  imagen_alt:   string | null;
+  tags:         string[];
+  estado:       PostStatus;
+  publicado_at: string;
+  created_at:   string;
+  updated_at:   string;
+}
+
+export interface Post extends PostSummary {
+  contenido: string;
+}
+
 // ─── Admin ────────────────────────────────────────────────────────────────────
 
 export interface AdminProfessional {

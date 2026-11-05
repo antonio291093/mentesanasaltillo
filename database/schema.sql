@@ -494,5 +494,42 @@ INSERT INTO contact_views (user_id, professional_id) VALUES
     (6, 1);  -- Carlos consultó a Dra. García
 
 -- ============================================================
+-- 9. BLOG / PUBLICACIONES
+-- ============================================================
+-- Contenido que también se publica en Instagram y Facebook.
+-- estado 'publicado' + publicado_at futuro = post programado.
+
+CREATE TYPE post_estado AS ENUM ('borrador', 'publicado');
+
+CREATE TABLE posts (
+    id           SERIAL       PRIMARY KEY,
+    slug         VARCHAR(120) NOT NULL,
+    titulo       VARCHAR(200) NOT NULL,
+    resumen      VARCHAR(500),
+    contenido    TEXT         NOT NULL,
+    imagen_url   TEXT,
+    imagen_alt   VARCHAR(300),
+    tags         TEXT[]       NOT NULL DEFAULT '{}',
+    estado       post_estado  NOT NULL DEFAULT 'borrador',
+    publicado_at TIMESTAMPTZ,
+    created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT uq_posts_slug UNIQUE (slug),
+    CONSTRAINT chk_posts_publicado_fecha
+        CHECK (estado = 'borrador' OR publicado_at IS NOT NULL)
+);
+
+CREATE TRIGGER trg_posts_updated_at
+    BEFORE UPDATE ON posts
+    FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+CREATE INDEX idx_posts_publicacion ON posts(estado, publicado_at DESC);
+CREATE INDEX idx_posts_tags        ON posts USING GIN (tags);
+
+GRANT ALL PRIVILEGES ON TABLE posts TO sms_user;
+GRANT ALL PRIVILEGES ON SEQUENCE posts_id_seq TO sms_user;
+
+-- ============================================================
 -- Fin del schema — listo para ejecutar en pgAdmin 4
 -- ============================================================

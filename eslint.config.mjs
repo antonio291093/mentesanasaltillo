@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // MCP server: paquete Node independiente con su propio tsconfig
+    "mcp/**",
   ]),
 ]);
 

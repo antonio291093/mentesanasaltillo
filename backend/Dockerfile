@@ -15,6 +15,8 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 COPY package*.json ./
 RUN npm ci --omit=dev
 COPY --from=builder /app/dist ./dist
+# Carpeta de imágenes del blog (se monta como volumen; Docker hereda este dueño)
+RUN mkdir -p /app/uploads && chown appuser:appgroup /app/uploads
 USER appuser
 EXPOSE 4000
 CMD ["node", "dist/server.js"]

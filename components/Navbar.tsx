@@ -9,6 +9,7 @@ import type { AuthUser } from '@/lib/types/api.types'
 const NAV_LINKS = [
   { href: '/', label: 'Inicio' },
   { href: '/especialistas', label: 'Especialistas' },
+  { href: '/blog', label: 'Blog' },
   { href: '/sobre-nosotros', label: 'Sobre Nosotros' },
 ]
 

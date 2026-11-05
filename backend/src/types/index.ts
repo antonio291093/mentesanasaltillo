@@ -102,6 +102,39 @@ export interface ContactView {
   viewed_at:       Date;
 }
 
+// ─── Blog ─────────────────────────────────────────────────────────────────────
+
+export type PostStatus = 'borrador' | 'publicado';
+
+export interface Post {
+  id:           number;
+  slug:         string;
+  titulo:       string;
+  resumen:      string | null;
+  contenido:    string;
+  imagen_url:   string | null;
+  imagen_alt:   string | null;
+  tags:         string[];
+  estado:       PostStatus;
+  publicado_at: Date | null;
+  created_at:   Date;
+  updated_at:   Date;
+}
+
+export interface CreatePostDto {
+  titulo:        string;
+  contenido:     string;
+  resumen?:      string | null;
+  slug?:         string;
+  imagen_url?:   string | null;
+  imagen_alt?:   string | null;
+  tags?:         string[];
+  estado?:       PostStatus;
+  publicado_at?: string | null;
+}
+
+export type UpdatePostDto = Partial<CreatePostDto>;
+
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 
 export interface JwtPayload {

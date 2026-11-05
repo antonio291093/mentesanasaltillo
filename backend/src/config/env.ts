@@ -21,4 +21,15 @@ export const env = {
   FRONTEND_URL:  optional('FRONTEND_URL', 'http://localhost:3000'),
   RESEND_API_KEY: optional('RESEND_API_KEY', ''),
   EMAIL_FROM:    optional('EMAIL_FROM', 'onboarding@resend.dev'),
+
+  // ── Contenido / blog ────────────────────────────────────────────────────────
+  // API key para clientes de servicio (el MCP server). Vacío = solo admin con JWT.
+  CONTENT_API_KEY:    optional('CONTENT_API_KEY', ''),
+  // Carpeta donde se guardan las imágenes subidas (volumen en Docker)
+  UPLOADS_DIR:        optional('UPLOADS_DIR', './uploads'),
+  // URL pública desde la que Nginx sirve esa carpeta
+  PUBLIC_UPLOADS_URL: optional(
+    'PUBLIC_UPLOADS_URL',
+    `${optional('FRONTEND_URL', 'http://localhost:3000').replace(/\/$/, '')}/uploads`,
+  ),
 } as const;

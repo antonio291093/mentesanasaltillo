@@ -34,6 +34,8 @@ Personas de Saltillo que buscan atención psicológica o psiquiátrica.
 - `app/admin/page.tsx` — Resumen admin: stats generales + tabla de profesionales pendientes con aprobar/rechazar inline
 - `app/admin/profesionales/page.tsx` — Gestión de profesionales por estado (pendiente/aprobado/rechazado) con acciones
 - `app/admin/resenas/page.tsx` — Listado de reseñas filtrado por estado vía query param `?estado=`
+- `app/blog/page.tsx` — Blog: listado de publicaciones (Server Component, destacado + lista, filtro `?tag=`, paginación `?page=`)
+- `app/blog/[slug]/page.tsx` — Artículo: Markdown con `react-markdown`, metadata OG y JSON-LD `BlogPosting`, CTA a especialistas
 - `components/Navbar.tsx` — Navbar global sticky con menú hamburguesa y estado de sesión en tiempo real
 - `components/Footer.tsx` — Footer global con links y aviso de crisis (SAPTEL)
 
@@ -54,7 +56,8 @@ Personas de Saltillo que buscan atención psicológica o psiquiátrica.
 - Schema PostgreSQL en `database/schema.sql` — ejecutado y validado en pgAdmin 4
 - Documentación del modelo en `database/README.md`
 - Tablas: users, user_profiles, professional_profiles, specialties,
-  professional_specialties, schedules, reviews, review_edits, contact_views
+  professional_specialties, schedules, reviews, review_edits, contact_views, posts
+- Migración del blog: `database/migrations/add_posts.sql`
 - Roles PostgreSQL: app_admin, app_psicologo, app_usuario
 
 #### Backend (completado)
@@ -96,6 +99,16 @@ Reviews
 - `POST   /api/v1/reviews`
 - `PUT    /api/v1/reviews/:id`
 - `PUT    /api/v1/reviews/:id/status`
+
+Blog (gestión con header `x-api-key: CONTENT_API_KEY` o JWT admin)
+- `GET    /api/v1/posts` *(público: publicados con fecha <= ahora; `?page=&limit=&tag=`)*
+- `GET    /api/v1/posts/:slug` *(público)*
+- `GET    /api/v1/posts/manage` *(gestión; `?estado=&q=&limit=`)*
+- `GET    /api/v1/posts/manage/:id` *(gestión)*
+- `POST   /api/v1/posts` *(gestión)*
+- `PATCH  /api/v1/posts/:id` *(gestión)*
+- `DELETE /api/v1/posts/:id` *(gestión)*
+- `POST   /api/v1/uploads` *(gestión; multipart campo `file`, JPG/PNG/WEBP/GIF, máx. 8 MB)*
 
 Admin
 - `GET    /api/v1/admin/professionals/pending`
@@ -202,6 +215,13 @@ Los colores base se definen como propiedades CSS en `:root` dentro de `globals.c
 - Evento personalizado `'auth-change'` sincroniza todas las instancias del hook (incluido Navbar) tras login/logout — sin llamadas extra a la API
 - Redirección por rol tras login: `admin → /admin`, `psicologo → /dashboard`, `usuario → /`
 - El cliente API (`lib/api/client.ts`) agrega el token automáticamente en cada request y reintenta con refresh en caso de 401
+
+### Blog y MCP server
+- Tabla `posts`: `estado` (`borrador` | `publicado`) + `publicado_at`. Publicado con fecha futura = programado (la API pública lo oculta hasta esa hora; no hay cron)
+- El slug se genera del título y se mantiene aunque cambie el título
+- Imágenes: el backend las guarda en `UPLOADS_DIR` (volumen `uploads_data` en Docker) y Nginx las sirve en `/uploads/`; en desarrollo las sirve Express
+- Las páginas del blog se renderizan en el servidor y llaman a la API por `API_INTERNAL_URL` (`http://backend:4000/api/v1` en Docker)
+- `mcp/` es un paquete Node independiente (excluido del build de Next): MCP server stdio con tools `upload_image`, `create_post`, `update_post`, `list_posts`, `get_post`. Setup en `mcp/README.md`
 
 ### Notificaciones por email (Resend)
 - SDK: paquete npm `resend`
